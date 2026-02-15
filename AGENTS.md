@@ -8,7 +8,7 @@ This is an Expo/React Native mobile application. Prioritize mobile-first pattern
 
 When working on this project, **always consult the official Expo documentation** available at:
 
-- **https://docs.expo.dev/llms.txt** - Index of all available documentation files
+- **https://docs.expo.dev/llms.txt** - _layout of all available documentation files
 - **https://docs.expo.dev/llms-full.txt** - Complete Expo documentation including Expo Router, Expo Modules API, development process
 - **https://docs.expo.dev/llms-eas.txt** - Complete EAS (Expo Application Services) documentation
 - **https://docs.expo.dev/llms-sdk.txt** - Complete Expo SDK documentation
@@ -28,7 +28,7 @@ These documentation files are specifically formatted for AI agents and should be
 /
 ├── app/                   # Expo Router file-based routing
 │   ├── (tabs)/            # Tab-based navigation screens
-│   │   ├── index.tsx      # Home screen
+│   │   ├── _layout.tsx      # Home screen
 │   │   ├── explore.tsx    # Explore screen
 │   │   └── _layout.tsx    # Tabs layout
 │   ├── _layout.tsx        # Root layout with theme provider
