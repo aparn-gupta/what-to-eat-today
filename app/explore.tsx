@@ -4,6 +4,9 @@ export default function Explore () {
     return (
         <View>
             <Text>Explore Route</Text>
+
+
+
         </View>
     )
 }
