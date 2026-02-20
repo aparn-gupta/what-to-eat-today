@@ -1,9 +1,6 @@
-import {TextInput, Touchable, TouchableOpacity, View, Image, Pressable, Text} from "react-native";
-import {Search} from "lucide-react-native";
-import React, {JSX} from "react";
-import CommonModal from "@/components/Modal";
-import {useRouter} from "expo-router";
-import {useState} from "react";
+import React, { JSX } from "react";
+import { Text, View } from "react-native";
+
 
 
 
@@ -18,7 +15,7 @@ export default function OptionsCard ({optionName}: {optionName: string}): JSX.El
 
 
 
-                <Pressable  className={""} style={{
+                <View  className={""} style={{
                     backgroundColor: "white",
                     width: 144,
                     height: 144,
@@ -33,13 +30,12 @@ export default function OptionsCard ({optionName}: {optionName: string}): JSX.El
                     pointerEvents: "auto"
                 }}>
 
-                    {/*<Image source="" />*/}
 
                     <Text className={''} style={{color: "slategray", fontSize: 9, textAlign: "center"}}> {optionName} </Text>
 
 
 
-                </Pressable>
+                </View>
 
 
 

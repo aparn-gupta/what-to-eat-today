@@ -1,21 +1,17 @@
-import {Animated, Text, View, Image, FlatList, StyleSheet , TouchableOpacity, Pressable, Modal, Alert} from "react-native";
-import "../globals.css";
-import {Link} from "expo-router";
-import ScrollView = Animated.ScrollView;
-import SearchBar from "@/components/SearchBar";
-import {useRouter} from "expo-router";
-import React, {useState, useEffect} from "react";
-import axios from "axios";
 import OptionsCard from "@/components/OptionsCard";
-import CommonModal from "@/components/Modal";
-import {SafeAreaProvider, SafeAreaView} from "react-native-safe-area-context";
+import axios from "axios";
+import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Animated, FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import "../globals.css";
+import ScrollView = Animated.ScrollView;
 
 // import React, {useState} from 'react';
-// import {Alert, Modal, StyleSheet, Text, Pressable, View} from 'react-native';
 // import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 
 
-export const serverAddress = " http://192.168.1.2:8000"
+export const serverAddress = " http://192.168.1.2:8001"
 
 
 
@@ -34,7 +30,7 @@ export default function Index() {
 
   const options = [
     {
-      name: "Name",
+      name: "Cooking Style",
 
     },
     {
@@ -87,6 +83,48 @@ export default function Index() {
   }, []);
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedFields, setSelectedFields] = useState({
+    taste: "",
+    region: "",
+    cookingMethod: "",
+    ingredients: "",
+    calories: 0,
+    prepTime: 0
+
+
+  })
+  const [optionsSet, setOptionsSet] = useState([])
+
+
+  useEffect(() => {
+
+    const fetchOptions = async () => {
+
+
+
+
+      try {
+        const url = `${serverAddress}/dishes?`
+        const res =  await axios.get(url)
+        console.log(res?.data)
+        setOptionsSet(res?.data)
+
+
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+
+    fetchOptions()
+
+
+
+  }, [selectedFields]);
+
+
+  
 
 
 
@@ -94,123 +132,86 @@ export default function Index() {
   // @ts-ignore
   // @ts-ignore
   return (
-    <ScrollView className="p-5 flex justify-center items-center h-full"
-    >
-      {/*<Text className="text-pink-900 font-semibold text-4xl">HHEHEHEH</Text>*/}
-      {/*{*/}
-      {/*  links.map((item, i) => (*/}
-      {/*      <Text key={i} className="py-3 text-fuchsia-800 font-bold"*/}
-      {/*      >*/}
-      {/*        <Link href={`/documents/${i}`}> Link {i + 1}</Link>*/}
-      {/*      </Text>*/}
+  <>
 
-      {/*  ))*/}
+  {/* <TouchableOpacity className="bg-red-400 h-20 w-20"   onPress={() => console.log("pressed")}> 
+    <Text>Hello</Text>
+    </TouchableOpacity> */}
+      <View className={"flex-row flex-wrap justify-between gap-3 w-[95%] mx-auto lg:w-1/4"}>
+  
+          {
+            options.map((option, index) => (
+  
+                <TouchableOpacity key={index}  style={{pointerEvents: "auto"}} onPress={() => {
+                  console.log("pressed")
+                  setModalVisible(true)
+                }}
+  
+  
+                >
 
+  
+                  <OptionsCard  optionName={option.name}   />
 
-      {/*}*/}
-
-
-      <CommonModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
-
-
-
-
-
-
-
-
-
-
-
-
-
-      <ScrollView >
-
-        {/*<Image source={'https://img.freepik.com/free-vector/healthy-vegetable-salad-plate_1308-169927.jpg?semt=ais_user_personalization&w=740&q=80'} className={'w-12 h-12'} />*/}
-
-        <SearchBar onPress={() => {router.push("/search")}}  />
-
-
-      </ScrollView>
+                 
+  
+                </TouchableOpacity>
+  
+  
+  
+  
+  
+  
+                )
+            )
+          }
+  
+        </View>
 
 
+        <FlatList
+            data={dishData}
+            keyExtractor={(item) => item.id}
+  
+            renderItem={({item}) =>  ( <View key={item.id}>
+              <Text>{item?.name}</Text> 
+              </View>)}
+        >
+  
+        </FlatList>
 
 
-
-      <View className={"grid grid-cols-2 gap-3 w-100 h-100 "}>
-
-        {
-          options.map((option, index) => (
-
-              <TouchableOpacity key={index}  style={{pointerEvents: "auto"}} onPress={() => {
-                console.log("pressed")
-                setModalVisible(true)
-              }}
-
-
+        <SafeAreaProvider>
+          <SafeAreaView >
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                presentationStyle="pageSheet"
               >
 
-                <OptionsCard  optionName={option.name}   />
-
-              </TouchableOpacity>
+             <View className="flex-1 justify-center items-center " >
 
 
-
-
-
-
-              )
-          )
-        }
-
-      </View>
-
-
-
-
-
-      <FlatList
-          data={dishData}
-          keyExtractor={(item) => item.id}
-
-          renderItem={({item}) =>  ( <View><Text>{item?.name}</Text> </View>)}
-      >
-
-      </FlatList>
-
-
-
-      <SafeAreaProvider>
-        <SafeAreaView style={styles.centeredView}>
-          <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
-                setModalVisible((prev: boolean) => !prev);
-              }}>
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>Hello World!</Text>
-                {/*<Pressable*/}
-                {/*    style={[styles.button, styles.buttonClose]}*/}
-                {/*    onPress={() => setModalVisible(!modalVisible)}>*/}
-                {/*    <Text style={styles.textStyle}>Hide Modal</Text>*/}
-                {/*</Pressable>*/}
+              <View className="w-[90%] mx-auto lg:w-1/2 rounded-xl bg-white p-5  ">
+              <ScrollView className={'flex-1'}>
+                {   [1, 2, 3, 4, 5, 6].map((item, index) => <View>{item}</View> )  }
+                </ScrollView>
               </View>
-            </View>
-          </Modal>
-          {/*<Pressable*/}
-          {/*    style={[styles.button, styles.buttonOpen]}*/}
-          {/*    onPress={() => setModalVisible(true)}>*/}
-          {/*    <Text style={styles.textStyle}>Show Modal</Text>*/}
-          {/*</Pressable>*/}
-        </SafeAreaView>
-      </SafeAreaProvider>
+         
 
 
-    </ScrollView>
+             </View>
+                  
+          
+            </Modal>
+       
+          </SafeAreaView>
+        </SafeAreaProvider>
+
+
+
+  </>
 
 
 
