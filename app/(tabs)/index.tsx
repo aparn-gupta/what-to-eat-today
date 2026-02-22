@@ -2,10 +2,11 @@ import OptionsCard from "@/components/OptionsCard";
 import axios from "axios";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Animated, FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {Animated, Button, FlatList, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import "../globals.css";
 import ScrollView = Animated.ScrollView;
+
 
 // import React, {useState} from 'react';
 // import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
@@ -43,7 +44,7 @@ export default function Index() {
 
     },
     {
-      name: "region",
+      name: "Region",
       value: "region",
 
     },
@@ -98,8 +99,8 @@ export default function Index() {
     region: "",
     cookingMethod: "",
     ingredients: "",
-    calories: 0,
-    prepTime: 0
+    calories: "",
+    prepTime: ""
 
 
   })
@@ -107,7 +108,9 @@ export default function Index() {
 
   const [requestedOption, setRequestedOption] = useState("")
 
-  console.log(requestedOption)
+  // console.log(requestedOption)
+
+  console.log(selectedFields)
 
 
   useEffect(() => {
@@ -138,6 +141,42 @@ export default function Index() {
   }, [requestedOption]);
 
 
+
+
+  const loadDishes = async () => {
+
+
+
+    let queryStr = `taste=${selectedFields.taste}&region=${selectedFields.region}&calories=${selectedFields.calories}&prep_time=${selectedFields.prepTime}&cooking_method=${selectedFields.cookingMethod}`
+
+    // &ingredients=${selectedFields.ingredients}
+
+
+
+
+
+    try {
+      const url = `${serverAddress}/dishes/preferences?${queryStr}`
+      const res =  await axios.get(url)
+      console.log(url)
+      console.log(res?.data)
+      setOptionsSet(res?.data)
+
+
+
+
+
+    } catch (err) {
+      console.error(err);
+    }
+
+
+
+}
+
+
+
+
   
 
 
@@ -166,7 +205,7 @@ export default function Index() {
                 >
 
   
-                  <OptionsCard  optionName={option.name}   />
+                  <OptionsCard  optionItem={option} selected={selectedFields}  />
 
                  
   
@@ -184,16 +223,31 @@ export default function Index() {
         </View>
 
 
-        <FlatList
-            data={dishData}
-            keyExtractor={(item) => item.id}
-  
-            renderItem={({item}) =>  ( <View key={item.id}>
-              <Text>{item?.name}</Text> 
-              </View>)}
-        >
-  
-        </FlatList>
+        {/*<FlatList*/}
+        {/*    data={dishData}*/}
+        {/*    keyExtractor={(item) => item.id}*/}
+
+        {/*    renderItem={({item}) =>  ( <View key={item.id}>*/}
+        {/*      <Text>{item?.name}</Text> */}
+        {/*      </View>)}*/}
+        {/*>*/}
+
+        {/*</FlatList>*/}
+
+
+  <View className={'mt-8 w-1/3 mx-auto' }>
+    <Button
+        onPress={() => {
+          console.log("submitting")
+          loadDishes()
+
+
+        }}
+        title="Show Dishes"
+        color="#841584"
+        accessibilityLabel="Learn more about this purple button"
+    />
+  </View>
 
 
         <SafeAreaProvider>
@@ -208,11 +262,39 @@ export default function Index() {
              <View className="flex-1 justify-center items-center " >
 
 
-              <View className="w-[90%] mx-auto lg:w-1/2 rounded-xl bg-white p-5  ">
-              <ScrollView className={'flex-1'}>
+              <View className="w-[90%] mx-auto lg:w-1/2 rounded-lg bg-white p-5 border border-zinc-200 ">
+
+               <Text className="text-2xl"> Choose {options.find(item => item.value === requestedOption)?.name}</Text>
+              <ScrollView className={'flex-1 '}>
                 {/*{   [1, 2, 3, 4, 5, 6].map((item, index) => <View>{item}</View> )  }*/}
 
-                {optionsSet?.map((option, index) => (<View key={index}>{option}</View>))}
+                {optionsSet?.map((option, index) => (<TouchableOpacity key={index} style={{
+                  width: 400,
+                  shadowOpacity: 0.8,
+                  borderColor: 'black',
+                  padding: 16,
+                  shadowColor: '#e6e6e6',
+                  borderRadius: '50%',
+
+                }}  onPress={() => {
+                  setModalVisible(false)
+                  setSelectedFields(prev => ({...prev, [requestedOption] : option}))
+
+                }}>
+                  <Text style={{
+
+                    // backgroundColor: ' #f2f2f2',
+
+
+                  }} >{option  && option}</Text>
+                </TouchableOpacity>))}
+
+
+
+
+
+
+
                 </ScrollView>
               </View>
          
@@ -235,7 +317,7 @@ export default function Index() {
 
 
 
-  );
+  )
 }
 
 

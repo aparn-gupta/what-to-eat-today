@@ -4,7 +4,8 @@ import { Text, View } from "react-native";
 
 
 
-export default function OptionsCard ({optionName}: {optionName: string}): JSX.Element {
+// @ts-ignore
+export default function OptionsCard ({optionItem, selected}): JSX.Element {
 
 
 
@@ -31,9 +32,9 @@ export default function OptionsCard ({optionName}: {optionName: string}): JSX.El
                 }}>
 
 
-                    <Text className={''} style={{color: "slategray", fontSize: 9, textAlign: "center"}}> {optionName} </Text>
+                    <Text className={''} style={{color: "slategray", fontSize: 9, textAlign: "center"}}> {optionItem.name} </Text>
 
-
+                    <Text>  {selected[optionItem.value]}</Text>
 
                 </View>
 
