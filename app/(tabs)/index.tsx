@@ -11,7 +11,10 @@ import ScrollView = Animated.ScrollView;
 // import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 
 
-export const serverAddress = " http://192.168.1.2:8001"
+// export const serverAddress = " http://192.168.1.2:8000"
+
+export const serverAddress = "http://192.168.1.6:8000"
+
 
 
 
@@ -31,26 +34,33 @@ export default function Index() {
   const options = [
     {
       name: "Cooking Style",
+      value: "cooking_method",
 
     },
     {
       name: "Taste",
+      value: "taste",
 
     },
     {
-      name: "Region",
+      name: "region",
+      value: "region",
 
     },
     {
       name: "Ingredients",
+      value: "ingredients",
 
     },
     {
       name: "Calories",
+      value: "calories",
 
     },
     {
       name: "Prep Time",
+      value: "prep_time",
+
 
     },
   ]
@@ -95,6 +105,10 @@ export default function Index() {
   })
   const [optionsSet, setOptionsSet] = useState([])
 
+  const [requestedOption, setRequestedOption] = useState("")
+
+  console.log(requestedOption)
+
 
   useEffect(() => {
 
@@ -104,7 +118,7 @@ export default function Index() {
 
 
       try {
-        const url = `${serverAddress}/dishes?`
+        const url = `${serverAddress}/dishes/options/?requested=${requestedOption}`
         const res =  await axios.get(url)
         console.log(res?.data)
         setOptionsSet(res?.data)
@@ -117,11 +131,11 @@ export default function Index() {
     }
 
 
-    fetchOptions()
+   if (requestedOption)  fetchOptions()
 
 
 
-  }, [selectedFields]);
+  }, [requestedOption]);
 
 
   
@@ -145,6 +159,7 @@ export default function Index() {
                 <TouchableOpacity key={index}  style={{pointerEvents: "auto"}} onPress={() => {
                   console.log("pressed")
                   setModalVisible(true)
+                  setRequestedOption(option.value)
                 }}
   
   
@@ -195,7 +210,9 @@ export default function Index() {
 
               <View className="w-[90%] mx-auto lg:w-1/2 rounded-xl bg-white p-5  ">
               <ScrollView className={'flex-1'}>
-                {   [1, 2, 3, 4, 5, 6].map((item, index) => <View>{item}</View> )  }
+                {/*{   [1, 2, 3, 4, 5, 6].map((item, index) => <View>{item}</View> )  }*/}
+
+                {optionsSet?.map((option, index) => (<View key={index}>{option}</View>))}
                 </ScrollView>
               </View>
          
