@@ -2,12 +2,14 @@ import DishCard from "@/components/DishCard";
 import OptionsCard from "@/components/OptionsCard";
 import axios from "axios";
 import { useRouter } from "expo-router";
+import { X } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import {
   Animated,
   Button,
   FlatList,
   Modal,
+  Pressable,
   Text,
   TouchableOpacity,
   View
@@ -220,10 +222,18 @@ keyExtractor={item => String(item.id)}
           >
             <View className="flex-1 justify-center items-center ">
               <View className="w-[90%] mx-auto lg:w-1/2 rounded-lg bg-white p-5 border border-zinc-200 ">
-                <Text className="text-2xl">
-                  Choose 
-                  {options.find((item) => item.value === requestedOption)?.name}
+
+              <View className="w-full flex-row  " style={{display: 'flex', justifyContent: 'space-between'}}>  <Text className="text-2xl">
+                  Choose {" "}
+                   {options.find((item) => item.value === requestedOption)?.name}
+
                 </Text>
+
+
+               <Pressable onPress={() => setModalVisible(false)} > <X /></Pressable>
+                </View>
+
+              
                 <ScrollView className={"flex-1 "}>
                   {/*{   [1, 2, 3, 4, 5, 6].map((item, index) => <View>{item}</View> )  }*/}
 
