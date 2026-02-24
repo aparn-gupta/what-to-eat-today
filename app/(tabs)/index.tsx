@@ -36,7 +36,7 @@ type Dishes = {
 
 }
 
-export const serverAddress = "http://192.168.1.6:8000";
+export const serverAddress = "http://192.168.1.4:8000";
 
 export default function Index() {
   const router = useRouter();
@@ -112,7 +112,8 @@ export default function Index() {
         const url = `${serverAddress}/dishes/options/?requested=${requestedOption}`;
         const res = await axios.get(url);
         console.log(res?.data);
-        setOptionsSet(res?.data);
+        let nonEmptyOptions = res?.data.filter((item: any) => item && item)
+        setOptionsSet(nonEmptyOptions);
       } catch (err) {
         console.error(err);
       }
@@ -184,7 +185,7 @@ export default function Index() {
               loadDishes();
             }}
             title="Show Dishes"
-            color="#841584"
+            color="#D28E00"
             accessibilityLabel="Learn more about this purple button"
           />
         </View>
@@ -194,7 +195,13 @@ export default function Index() {
 
       <ScrollView className={`${showResults ? 'block' : 'hidden'} ` }>
 
+
+
         <View className="w-[95%] mx-auto lg:w-1/4 mt-8">
+
+        <Text className={`mb-4  ${showResults ? 'block' : 'hidden'} `} style={{color:"#c9c8c3"}}> Dishes matching your preferences:</Text>
+
+
 
         <FlatList 
 
@@ -223,7 +230,7 @@ keyExtractor={item => String(item.id)}
             <View className="flex-1 justify-center items-center ">
               <View className="w-[90%] mx-auto lg:w-1/2 rounded-lg bg-white p-5 border border-zinc-200 ">
 
-              <View className="w-full flex-row  " style={{display: 'flex', justifyContent: 'space-between'}}>  <Text className="text-2xl">
+              <View className="w-full flex-row  " style={{display: 'flex', justifyContent: 'space-between'}}>  <Text className="text-2xl mb-6">
                   Choose {" "}
                    {options.find((item) => item.value === requestedOption)?.name}
 
@@ -234,19 +241,32 @@ keyExtractor={item => String(item.id)}
                 </View>
 
               
-                <ScrollView className={"flex-1 "}>
+                <ScrollView className={"flex-1"} contentContainerStyle={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  gap: 16
+
+                }}>
                   {/*{   [1, 2, 3, 4, 5, 6].map((item, index) => <View>{item}</View> )  }*/}
 
                   {optionsSet?.map((option, index) => (
                     <TouchableOpacity
                       key={index}
                       style={{
-                        width: 400,
+                        display: "flex",
+                        justifyContent: "center",
                         shadowOpacity: 0.8,
-                        borderColor: "black",
-                        padding: 16,
-                        shadowColor: "#e6e6e6",
-                        borderRadius: "50%",
+                       elevation: 3,
+                        padding: 12,
+                        backgroundColor: "#c9c8c3",
+                        borderColor: "#c9c8c3",
+                        borderRadius: 10,
+                        marginBottom: 10,
+                      
+
+
+                       
                       }}
                       onPress={() => {
                         setModalVisible(false);
