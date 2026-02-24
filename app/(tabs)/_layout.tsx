@@ -1,6 +1,5 @@
-import {View, Text} from 'react-native'
-import {Tabs} from "expo-router";
-import {Home, Search, User, BookmarkIcon} from "lucide-react-native";
+import { Tabs } from "expo-router";
+import { BookmarkIcon, Home, User } from "lucide-react-native";
 
 export default function _layout () {
     return (
@@ -25,12 +24,12 @@ export default function _layout () {
               headerShown: true,
               tabBarIcon: ({focused}) => (<Home  color={`${focused ? '#1377FF' : 'white'}`} />)
           }} />
-          <Tabs.Screen name='search' options={{
+          {/* <Tabs.Screen name='search' options={{
               title: 'Search',
               headerShown: true,
               tabBarIcon: ({focused}) => (<Search color={`${focused ? '#1377FF' : 'white'}`} />)
 
-          }} />
+          }} /> */}
 
           <Tabs.Screen name='favourites' options={{
               title: 'Favourites',

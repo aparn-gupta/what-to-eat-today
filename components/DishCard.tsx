@@ -19,7 +19,9 @@ interface DishCardProps {
 
 const DishCard = ({ dish }: DishCardProps): JSX.Element => {
   return (
-    <View className="mb-8" style={{borderWidth: 1, borderRadius: 10, borderColor: "#c9c8c3", padding: 20, marginBottom: 16}}>
+    <View className="mb-8" style={{borderWidth: 1, borderRadius: 10, borderColor: "#c9c8c3", padding: 20, marginBottom: 16, 
+    // backgroundColor: "white"
+    }}>
       <Text className="text-2xl" style={{color: "#D28E00"}} > {dish.name.trim()} </Text>
 
 

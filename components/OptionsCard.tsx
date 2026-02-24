@@ -33,7 +33,7 @@ export default function OptionsCard({ optionItem, selected }): JSX.Element {
           {optionItem.name}{" "}
         </Text>
 
-        <Text className="text-lg " style={{color: "#D28E00", marginTop: 5}}> {selected[optionItem.value]}</Text>
+        <Text className=" " style={{color: "#D28E00", marginTop: 5, textTransform: "capitalize", fontWeight: 500, textAlign: "center"}} > {selected[optionItem.value]}</Text>
       </View>
 
     
