@@ -145,7 +145,36 @@ export default function Index() {
       {/* <TouchableOpacity className="bg-red-400 h-20 w-20"   onPress={() => console.log("pressed")}> 
     <Text>Hello</Text>
     </TouchableOpacity> */}
-      <View className={`${showResults ? 'hidden' : 'block'}`}>
+    
+
+
+
+ {showResults ?      <ScrollView >
+
+
+
+<View className="w-[95%] mx-auto lg:w-1/4 mt-8">
+
+<Text className={`mb-4  `} style={{color:"#c9c8c3"}}> Dishes matching your preferences:</Text>
+
+
+
+<FlatList 
+
+data={matchingDishes}
+// renderItem={({item} )=> <View > {item.name} -- {item.prep_time} </View>}
+renderItem={({item} )=> <DishCard  dish={item} />}
+
+keyExtractor={item => String(item.id)}
+ListEmptyComponent={<View> No Dishes Found Matching your preferences. Please try something else! </View>}
+
+/>
+
+</View>
+
+
+
+</ScrollView> :   <View >
         <View
           className={
             "flex-row flex-wrap justify-between gap-3 w-[95%] mx-auto lg:w-1/4 mt-8"
@@ -189,35 +218,7 @@ export default function Index() {
             accessibilityLabel="Learn more about this purple button"
           />
         </View>
-      </View>
-
-
-
-      <ScrollView className={`${showResults ? 'block' : 'hidden'} ` }>
-
-
-
-        <View className="w-[95%] mx-auto lg:w-1/4 mt-8">
-
-        <Text className={`mb-4  ${showResults ? 'block' : 'hidden'} `} style={{color:"#c9c8c3"}}> Dishes matching your preferences:</Text>
-
-
-
-        <FlatList 
-
-data={matchingDishes}
-// renderItem={({item} )=> <View > {item.name} -- {item.prep_time} </View>}
-renderItem={({item} )=> <DishCard  dish={item} />}
-
-keyExtractor={item => String(item.id)}
-
-/>
-        
-        </View>
-
-     
-        
-      </ScrollView>
+      </View>}
 
       <SafeAreaProvider>
         <SafeAreaView>
