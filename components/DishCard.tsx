@@ -19,15 +19,20 @@ interface DishCardProps {
 
 const DishCard = ({ dish }: DishCardProps): JSX.Element => {
   return (
-    <View className="mb-8">
-      <Text className="text-2xl"> {dish.name} </Text>
+    <View className="mb-8" style={{borderWidth: 1, borderRadius: 10, borderColor: "#c9c8c3", padding: 20, marginBottom: 16}}>
+      <Text className="text-2xl" style={{color: "#D28E00"}} > {dish.name.trim()} </Text>
+
+
+      <View className="flex flex-row justify-between">
       <View
         className="flex flex-row"
         style={{ marginTop: 24, marginBottom: 10 }}
       >
         
         <Text style={{ fontWeight: "800" }}> Taste: </Text>
-        <Text> {dish.taste}</Text>
+        <Text className="capitalize" style={{
+    textTransform: "capitalize"
+}}> {dish.taste}</Text>
       </View>
       <View
         className="flex flex-row"
@@ -39,15 +44,25 @@ const DishCard = ({ dish }: DishCardProps): JSX.Element => {
         </Text>
         <Text> {dish.region} </Text>
       </View>
+      </View>
+     
       <View style={{ marginTop: 24, marginBottom: 10 }}>
         <Text style={{ fontWeight: 800 }}> Main Ingredients:</Text>
       </View>
-      <View className=" flex flex-wrap gap-4">
+      <View className=" flex flex-row flex-wrap" style={{gap: 10}}>
         
         {dish.main_ingredients.map((item, i) => (
-          <Text key={i} className="p-3 rounded-md  ">
-            {item}
-          </Text>
+         <View style={{
+          backgroundColor: "#EEDB83",
+          paddingRight: 10,
+          paddingLeft: 10,
+          paddingTop: 4,
+          paddingBottom: 4,
+          borderRadius: 10
+         }}>  <Text key={i} className="p-3 rounded-md  ">
+         {item}
+       </Text></View>
+
         ))}
       </View>
 
@@ -55,16 +70,24 @@ const DishCard = ({ dish }: DishCardProps): JSX.Element => {
         
         Optional Ingredients:
       </Text>
-      <View>
+      <View className="flex flex-row flex-wrap " style={{gap: 10}}>
         
         {dish.optional_ingredients.map((item, i) => (
-          <Text key={i} className="p-3 rounded-md  shadow-slate-500">
-            {item}
-          </Text>
+           <View style={{
+            backgroundColor: "#EEDB83",
+            paddingRight: 10,
+            paddingLeft: 10,
+            paddingTop: 4,
+            paddingBottom: 4,
+            borderRadius: 10
+           }}>  <Text key={i} className="p-3 rounded-md  ">
+           {item}
+         </Text></View>
         ))}
       </View>
 
-      <View
+  <View className="flex flex-row justify-between">
+  <View
         className="flex flex-row"
         style={{ marginTop: 24, marginBottom: 10 }}
       >
@@ -84,6 +107,7 @@ const DishCard = ({ dish }: DishCardProps): JSX.Element => {
 
         <Text> {dish.calories} </Text>
       </View>
+  </View>
 
       {/* </View> */}
 
