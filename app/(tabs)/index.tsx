@@ -113,7 +113,57 @@ export default function Index() {
         const res = await axios.get(url);
         console.log(res?.data);
         let nonEmptyOptions = res?.data.filter((item: any) => item && item)
-        setOptionsSet(nonEmptyOptions);
+
+        let categories = []
+
+        if (requestedOption == "prep_time") {
+          let min = nonEmptyOptions[0]
+          let max = nonEmptyOptions[nonEmptyOptions.length - 1]
+
+
+          for (let each of nonEmptyOptions) {
+            if (Number(each) < Number(max)) {
+              categories.push(`${each}-${Number(each) + 10}`)
+            }
+  
+          }
+
+          setOptionsSet(categories);
+
+      
+
+
+
+        } else   if (requestedOption == "calories") {
+          let min = nonEmptyOptions[0]
+          let max = nonEmptyOptions[nonEmptyOptions.length - 1]
+
+
+          for (let each of nonEmptyOptions) {
+            if (Number(each) < Number(max)) {
+              categories.push(`${each}-${Number(each) + 20}`)
+            }
+  
+          }
+
+          setOptionsSet(categories);
+
+      
+
+
+
+        } 
+        
+        
+        else {
+          setOptionsSet(nonEmptyOptions);
+        }
+
+
+
+      
+        
+       
       } catch (err) {
         console.error(err);
       }
@@ -233,7 +283,9 @@ ListEmptyComponent={<View> No Dishes Found Matching your preferences. Please try
 
               <View className="w-full flex-row  " style={{display: 'flex', justifyContent: 'space-between'}}>  <Text className="text-2xl mb-6">
                   Choose {" "}
-                   {options.find((item) => item.value === requestedOption)?.name}
+                   {options.find((item) => item.value === requestedOption)?.name} 
+                 <Text className="text-base" style={{color: "#c9c8c3"}}>  {requestedOption == "prep_time" ? "(In Minutes)" : ""}</Text>
+
 
                 </Text>
 
@@ -284,7 +336,7 @@ ListEmptyComponent={<View> No Dishes Found Matching your preferences. Please try
                           }
                         }
                       >
-                        {option && option}
+                        {option} 
                       </Text>
                     </TouchableOpacity>
                   ))}
