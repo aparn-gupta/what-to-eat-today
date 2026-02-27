@@ -1,7 +1,8 @@
 import axios from "axios";
+import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
-import { Button, Dimensions, TextInput, View } from "react-native";
+import { Button, Dimensions, Text, TextInput, View } from "react-native";
 import { serverAddress } from "../(tabs)";
 
 export default function Login() {
@@ -10,6 +11,8 @@ export default function Login() {
 
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
+
+  const router = useRouter()
 
   const handleSubmit = async () => {
     try {
@@ -49,6 +52,12 @@ export default function Login() {
         alignItems: "center",
       }}
     >
+
+
+        <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 10 }}>Log In to your Account</Text>
+
+
+
       <View className="flex flex-column gap-4 border p-16 rounded-xl">
         <TextInput
           onChangeText={setUsername}
@@ -67,6 +76,7 @@ export default function Login() {
           onChangeText={setPassword}
           placeholder="Password"
           value={password}
+          secureTextEntry={true}
           style={{
             borderWidth: 2,
 
@@ -74,12 +84,19 @@ export default function Login() {
             height: 45,
             borderRadius: 10,
             padding: 10,
+            
           }}
         />
       </View>
 
       <View className="mt-5 ">
         <Button onPress={handleSubmit} title="Submit" />
+
+      
+      </View>
+
+
+      <View className="mt-5">        <Button onPress={() => {router.push("/register")}} title="Don't have an account yet? Register here" color="#D28E00"   /> 
       </View>
     </View>
   );
