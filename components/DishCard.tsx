@@ -61,7 +61,8 @@ const DishCard = ({ dish }: DishCardProps): JSX.Element => {
           paddingTop: 4,
           paddingBottom: 4,
           borderRadius: 10
-         }}>  <Text key={i} className="p-3 rounded-md  ">
+         }}>  
+         <Text key={i} className="p-3 rounded-md  ">
          {item}
        </Text></View>
 
