@@ -33,6 +33,9 @@ export default function Login() {
 
       console.log(response.data);
 
+      localStorage.setItem("access-token", response.data.access)
+      router.push("/home")
+
 
       await SecureStore.setItemAsync("access-token", response.data.access);
       await SecureStore.setItemAsync("refresh-token", response.data.refresh);
