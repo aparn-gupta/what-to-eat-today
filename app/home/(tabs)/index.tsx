@@ -1,3 +1,4 @@
+import '@/app/globals.css';
 import DishCard from "@/components/DishCard";
 import OptionsCard from "@/components/OptionsCard";
 import axios from "axios";
@@ -15,7 +16,6 @@ import {
   View
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import "../globals.css";
 import ScrollView = Animated.ScrollView;
 
 // import React, {useState} from 'react';
@@ -36,7 +36,7 @@ type Dishes = {
 
 }
 
-export const serverAddress = "http://192.168.1.4:8000";
+export const serverAddress = "http://192.168.1.7:8000";
 
 export default function Index() {
   const router = useRouter();
@@ -95,7 +95,7 @@ export default function Index() {
     calories: "",
     prepTime: "",
   });
-  const [optionsSet, setOptionsSet] = useState([]);
+  const [optionsSet, setOptionsSet] = useState<string[]>([]);
 
   const [requestedOption, setRequestedOption] = useState("");
 

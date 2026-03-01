@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
 import { Button, Dimensions, Text, TextInput, View } from "react-native";
-import { serverAddress } from "../(tabs)";
+import { serverAddress } from "../home/(tabs)";
 
 export default function Login() {
   const [username, setUsername] = useState("");

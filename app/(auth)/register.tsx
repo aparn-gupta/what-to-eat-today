@@ -1,14 +1,14 @@
 import axios from "axios";
 import { useState } from "react";
 import {
-    Button,
-    Dimensions,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  Button,
+  Dimensions,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
-import { serverAddress } from "../(tabs)";
+import { serverAddress } from "../home/(tabs)";
 
 export default function Register() {
   const [userFormData, setUserFormData] = useState({
