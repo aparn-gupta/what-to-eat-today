@@ -3,7 +3,6 @@ import DishCard from "@/components/DishCard";
 import OptionsCard from "@/components/OptionsCard";
 import axios from "axios";
 import { useRouter } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { X } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -61,10 +60,7 @@ export default function Index() {
       name: "Region",
       value: "region",
     },
-    {
-      name: "Ingredients",
-      value: "ingredients",
-    },
+  
     {
       name: "Calories",
       value: "calories",
@@ -73,12 +69,18 @@ export default function Index() {
       name: "Prep Time",
       value: "prep_time",
     },
+    {
+      name: "Ingredients",
+      value: "ingredients",
+    },
   ];
 
   useEffect(() => {
 
     const fetchDishes = async () => {
-      const token  = await SecureStore.getItemAsync("access-token")
+      // const token  = await SecureStore.getItemAsync("access-token")
+      const token  = localStorage.getItem("access-token")
+
 
       try {
         const url = `${serverAddress}/dishes/list`;
@@ -94,11 +96,18 @@ export default function Index() {
       }
     };
 
-    fetchDishes();
+    // fetchDishes();
   }, []);
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedFields, setSelectedFields] = useState({
+  const [selectedFields, setSelectedFields] = useState<{
+    taste: string;
+    region: string;
+    cookingMethod: string;
+    ingredients: string[];
+    calories: string;
+    prepTime: string;
+  }>({
     taste: "",
     region: "",
     cookingMethod: "",
@@ -113,14 +122,15 @@ export default function Index() {
   const [showResults, setShowResults] = useState(false);
   const [matchingDishes, setMatchingDishes] = useState<Dishes[]>([])
 
-  // console.log(requestedOption)
+  console.log(requestedOption)
 
   console.log(selectedFields);
 
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const token  = await SecureStore.getItemAsync("access-token")
+        // const token  = await SecureStore.getItemAsync("access-token")
+        const token  = localStorage.getItem("access-token")
         const url = `${serverAddress}/dishes/options/?requested=${requestedOption}`;
         const res = await axios.get(url, {
           headers: {
@@ -202,15 +212,23 @@ selectedFields.ingredients.forEach((item) => {
 
 
 
-    let queryStr = `taste=${selectedFields.taste}&region=${selectedFields.region}&calories=${selectedFields.calories}&prep_time=${selectedFields.prepTime}&cooking_method=${selectedFields.cookingMethod}&ingredients=${params.toString()}`;
+    let queryStr = `taste=${selectedFields.taste}&region=${selectedFields.region}&cooking_method=${selectedFields.cookingMethod}&calories=${selectedFields.calories}&prep_time=${selectedFields.prepTime}&ingredients=${params.toString()}`;
+
+    
 
    
 
     try {
       const url = `${serverAddress}/dishes/preferences?${queryStr}`;
       console.log(url);
+        // const token  = await SecureStore.getItemAsync("access-token")
+        const token  = localStorage.getItem("access-token")
 
-      const res = await axios.get(url);
+      const res = await axios.get(url, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
       console.log(res?.data);
       setMatchingDishes(res?.data);
     } catch (err) {
@@ -256,10 +274,10 @@ ListEmptyComponent={<View> No Dishes Found Matching your preferences. Please try
 
 
 
-</ScrollView> :   <View >
+</ScrollView> :   <ScrollView>
         <View
           className={
-            "flex-row flex-wrap justify-between gap-3 w-[95%] mx-auto lg:w-1/4 mt-8"
+            "flex-row flex-wrap justify-center gap-3 w-[95%] mx-auto lg:w-1/4 mt-8"
           }
         >
           {options.map((option, index) => (
@@ -277,16 +295,6 @@ ListEmptyComponent={<View> No Dishes Found Matching your preferences. Please try
           ))}
         </View>
 
-        {/*<FlatList*/}
-        {/*    data={dishData}*/}
-        {/*    keyExtractor={(item) => item.id}*/}
-
-        {/*    renderItem={({item}) =>  ( <View key={item.id}>*/}
-        {/*      <Text>{item?.name}</Text> */}
-        {/*      </View>)}*/}
-        {/*>*/}
-
-        {/*</FlatList>*/}
 
         <View className={"mt-8 w-1/3 mx-auto"}>
           <Button
@@ -300,7 +308,7 @@ ListEmptyComponent={<View> No Dishes Found Matching your preferences. Please try
             accessibilityLabel="Learn more about this purple button"
           />
         </View>
-      </View>}
+      </ScrollView>}
 
       <SafeAreaProvider>
         <SafeAreaView>
@@ -344,7 +352,7 @@ ListEmptyComponent={<View> No Dishes Found Matching your preferences. Please try
                         shadowOpacity: 0.8,
                         elevation: 3,
                         padding: 12,
-                        backgroundColor: hovered ? '#D28E00' : '#c9c8c3',
+                        backgroundColor: hovered || (requestedOption == "ingredients" && newIngredients.current.includes(option)) ? '#D28E00' : '#c9c8c3',
                       
                         borderColor: pressed ? "black" : "#c9c8c3",
                         borderWidth: 2,
@@ -356,11 +364,12 @@ ListEmptyComponent={<View> No Dishes Found Matching your preferences. Please try
                       
 
                         if (requestedOption != "ingredients") {
-                          setModalVisible(false);
                           setSelectedFields((prev) => ({
                             ...prev,
                             [requestedOption]: option,
                           }));
+                          setModalVisible(false);
+                        
 
                         
                         } else {
@@ -378,15 +387,14 @@ ListEmptyComponent={<View> No Dishes Found Matching your preferences. Please try
                           }
 
                           console.log(newIngredients.current)
+                          setSelectedFields((prev) => ({...prev,  [requestedOption] : newIngredients.current}))
 
                         
 
                         }
 
 
-                        setSelectedFields((prev) => (
-                          {...prev,  [requestedOption] : newIngredients.current}
-                        ))
+                      
 
 
 

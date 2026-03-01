@@ -9,8 +9,8 @@ export default function OptionsCard({ optionItem, selected }): JSX.Element {
         className={""}
         style={{
           backgroundColor: "white",
-          width: 144,
-          height: 144,
+          width: optionItem.value == "ingredients" ? 370 : 175,
+          height: optionItem.value == "ingredients" ? 180 : 175,
           borderColor: "",
           borderRadius: 8,
           elevation: 5,
@@ -24,7 +24,7 @@ export default function OptionsCard({ optionItem, selected }): JSX.Element {
           justifyContent: "center"
         }}
       >
-      <View style={{backgroundColor: ""}}>
+      <View >
       <Text
           className={""}
           style={{ color: "slategray", fontSize: 12, textAlign: "center" }}
@@ -33,7 +33,23 @@ export default function OptionsCard({ optionItem, selected }): JSX.Element {
           {optionItem.name}{" "}
         </Text>
 
-        <Text className=" " style={{color: "#D28E00", marginTop: 5, textTransform: "capitalize", fontWeight: 500, textAlign: "center"}} > {selected[optionItem.value]}</Text>
+
+        <View style={{backgroundColor: "",  display: "flex", flexDirection: "row", justifyContent: "center", flexWrap: "wrap", gap: 5, padding: 10}}>
+
+        {  optionItem.value == "ingredients" ?  selected[optionItem.value].map((item: any) => (
+          <View style={{
+            backgroundColor: "#EEDB83",
+           
+            paddingRight: 10,
+            paddingLeft: 10,
+            paddingTop: 4,
+            paddingBottom: 4,
+            borderRadius: 10,
+            
+           }}> <Text> {item}</Text></View>
+        ))   :   <Text style={{color: "#D28E00", marginTop: 5, textTransform: "capitalize", fontWeight: 500, textAlign: "center"}}> {selected[optionItem.value]} </Text>} 
+        </View>
+
       </View>
 
     
