@@ -4,7 +4,7 @@ import OptionsCard from "@/components/OptionsCard";
 import axios from "axios";
 import { useRouter } from "expo-router";
 import { X } from "lucide-react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Button,
@@ -41,8 +41,11 @@ export const serverAddress = "http://192.168.1.7:8000";
 export default function Index() {
   const router = useRouter();
   const links = ["/about", "/explore", "/products"];
+  let newIngredients = useRef<string[]>([])
+
 
   const [dishData, setDishData] = useState<any[]>([]);
+  const [ingredients, setSelectedIngredients] = useState<string[]>([])
 
   const options = [
     {
@@ -91,7 +94,7 @@ export default function Index() {
     taste: "",
     region: "",
     cookingMethod: "",
-    ingredients: "",
+    ingredients: [],
     calories: "",
     prepTime: "",
   });
@@ -185,6 +188,8 @@ export default function Index() {
       setMatchingDishes(res?.data);
     } catch (err) {
       console.error(err);
+    } finally {
+      newIngredients.current = []
     }
   };
 
@@ -304,29 +309,63 @@ ListEmptyComponent={<View> No Dishes Found Matching your preferences. Please try
                   {/*{   [1, 2, 3, 4, 5, 6].map((item, index) => <View>{item}</View> )  }*/}
 
                   {optionsSet?.map((option, index) => (
-                    <TouchableOpacity
+                    <Pressable
                       key={index}
-                      style={{
+                      style={({ pressed, hovered }) => ({
                         display: "flex",
                         justifyContent: "center",
                         shadowOpacity: 0.8,
-                       elevation: 3,
+                        elevation: 3,
                         padding: 12,
-                        backgroundColor: "#c9c8c3",
-                        borderColor: "#c9c8c3",
+                        backgroundColor: hovered ? '#D28E00' : '#c9c8c3',
+                      
+                        borderColor: pressed ? "black" : "#c9c8c3",
+                        borderWidth: 2,
                         borderRadius: 10,
                         marginBottom: 10,
+                      })}
+                      onPress={() => {
+
                       
+
+                        if (requestedOption != "ingredients") {
+                          setModalVisible(false);
+                          setSelectedFields((prev) => ({
+                            ...prev,
+                            [requestedOption]: option,
+                          }));
+
+                        
+                        } else {
+
+                          const ingredientSet = new Set(newIngredients.current)
+                         
+                          if (ingredientSet.has(option)) {
+                             newIngredients.current = newIngredients.current.filter(item => item != option)
+
+
+                          } else {
+
+                            newIngredients.current.push(option)
+                           
+                          }
+
+                          console.log(newIngredients.current)
+
+                        
+
+                        }
+
+
+                        setSelectedFields((prev) => (
+                          {...prev,  [requestedOption] : newIngredients.current}
+                        ))
+
+
+
 
 
                        
-                      }}
-                      onPress={() => {
-                        setModalVisible(false);
-                        setSelectedFields((prev) => ({
-                          ...prev,
-                          [requestedOption]: option,
-                        }));
                       }}
                     >
                       <Text
@@ -338,7 +377,7 @@ ListEmptyComponent={<View> No Dishes Found Matching your preferences. Please try
                       >
                         {option} 
                       </Text>
-                    </TouchableOpacity>
+                    </Pressable>
                   ))}
                 </ScrollView>
               </View>
