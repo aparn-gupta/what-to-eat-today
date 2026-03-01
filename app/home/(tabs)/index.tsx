@@ -3,6 +3,7 @@ import DishCard from "@/components/DishCard";
 import OptionsCard from "@/components/OptionsCard";
 import axios from "axios";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { X } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -75,10 +76,17 @@ export default function Index() {
   ];
 
   useEffect(() => {
+
     const fetchDishes = async () => {
+      const token  = await SecureStore.getItemAsync("access-token")
+
       try {
         const url = `${serverAddress}/dishes/list`;
-        const res = await axios.get(url);
+        const res = await axios.get(url, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
         console.log(res?.data);
         setDishData(res?.data);
       } catch (err) {
@@ -112,8 +120,13 @@ export default function Index() {
   useEffect(() => {
     const fetchOptions = async () => {
       try {
+        const token  = await SecureStore.getItemAsync("access-token")
         const url = `${serverAddress}/dishes/options/?requested=${requestedOption}`;
-        const res = await axios.get(url);
+        const res = await axios.get(url, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
         console.log(res?.data);
         let nonEmptyOptions = res?.data.filter((item: any) => item && item)
 
@@ -176,14 +189,28 @@ export default function Index() {
   }, [requestedOption]);
 
   const loadDishes = async () => {
-    let queryStr = `taste=${selectedFields.taste}&region=${selectedFields.region}&calories=${selectedFields.calories}&prep_time=${selectedFields.prepTime}&cooking_method=${selectedFields.cookingMethod}`;
 
-    // &ingredients=${selectedFields.ingredients}
+
+let params = new URLSearchParams()
+
+selectedFields.ingredients.forEach((item) => {
+
+  params.append("ingredients", item)
+
+
+})
+
+
+
+    let queryStr = `taste=${selectedFields.taste}&region=${selectedFields.region}&calories=${selectedFields.calories}&prep_time=${selectedFields.prepTime}&cooking_method=${selectedFields.cookingMethod}&ingredients=${params.toString()}`;
+
+   
 
     try {
       const url = `${serverAddress}/dishes/preferences?${queryStr}`;
-      const res = await axios.get(url);
       console.log(url);
+
+      const res = await axios.get(url);
       console.log(res?.data);
       setMatchingDishes(res?.data);
     } catch (err) {
