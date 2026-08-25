@@ -1,4 +1,5 @@
-import '@/app/globals.css';
+import "@/app/globals.css";
+import { optionImages } from "@/app/lib/optionsImageList";
 import DishCard from "@/components/DishCard";
 import OptionsCard from "@/components/OptionsCard";
 import axios from "axios";
@@ -13,7 +14,7 @@ import {
   Pressable,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import ScrollView = Animated.ScrollView;
@@ -24,28 +25,28 @@ import ScrollView = Animated.ScrollView;
 // export const serverAddress = " http://192.168.1.2:8000"
 
 type Dishes = {
-  id: number | string,
-  name: string,
-  taste: string,
-  region: string,
-  main_ingredients: string[],
-  optional_ingredients: string[],
-  recipe: string,
-  calories: number | string,
-  prep_time: number | string
+  id: number | string;
+  name: string;
+  taste: string;
+  region: string;
+  main_ingredients: string[];
+  optional_ingredients: string[];
+  recipe: string;
+  calories: number | string;
+  prep_time: number | string;
+};
 
-}
+export const serverAddress = " http://127.0.0.1:8000";
 
-export const serverAddress = "http://192.168.1.7:8000";
+// export const serverAddress = "http://192.168.1.7:8000";
 
 export default function Index() {
   const router = useRouter();
   const links = ["/about", "/explore", "/products"];
-  let newIngredients = useRef<string[]>([])
-
+  let newIngredients = useRef<string[]>([]);
 
   const [dishData, setDishData] = useState<any[]>([]);
-  const [ingredients, setSelectedIngredients] = useState<string[]>([])
+  const [ingredients, setSelectedIngredients] = useState<string[]>([]);
 
   const options = [
     {
@@ -60,7 +61,7 @@ export default function Index() {
       name: "Region",
       value: "region",
     },
-  
+
     {
       name: "Calories",
       value: "calories",
@@ -76,18 +77,16 @@ export default function Index() {
   ];
 
   useEffect(() => {
-
     const fetchDishes = async () => {
       // const token  = await SecureStore.getItemAsync("access-token")
-      const token  = localStorage.getItem("access-token")
-
+      const token = localStorage.getItem("access-token");
 
       try {
         const url = `${serverAddress}/dishes/list`;
         const res = await axios.get(url, {
           headers: {
-            "Authorization": `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         console.log(res?.data);
         setDishData(res?.data);
@@ -120,9 +119,9 @@ export default function Index() {
   const [requestedOption, setRequestedOption] = useState("");
 
   const [showResults, setShowResults] = useState(false);
-  const [matchingDishes, setMatchingDishes] = useState<Dishes[]>([])
+  const [matchingDishes, setMatchingDishes] = useState<Dishes[]>([]);
 
-  console.log(requestedOption)
+  console.log(requestedOption);
 
   console.log(selectedFields);
 
@@ -130,66 +129,43 @@ export default function Index() {
     const fetchOptions = async () => {
       try {
         // const token  = await SecureStore.getItemAsync("access-token")
-        const token  = localStorage.getItem("access-token")
+        const token = localStorage.getItem("access-token");
         const url = `${serverAddress}/dishes/options/?requested=${requestedOption}`;
         const res = await axios.get(url, {
           headers: {
-            "Authorization": `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         console.log(res?.data);
-        let nonEmptyOptions = res?.data.filter((item: any) => item && item)
+        let nonEmptyOptions = res?.data.filter((item: any) => item && item);
 
-        let categories = []
+        let categories = [];
 
         if (requestedOption == "prep_time") {
-          let min = nonEmptyOptions[0]
-          let max = nonEmptyOptions[nonEmptyOptions.length - 1]
-
-
-          for (let each of nonEmptyOptions) {
-            if (Number(each) < Number(max)) {
-              categories.push(`${each}-${Number(each) + 10}`)
-            }
-  
-          }
-
-          setOptionsSet(categories);
-
-      
-
-
-
-        } else   if (requestedOption == "calories") {
-          let min = nonEmptyOptions[0]
-          let max = nonEmptyOptions[nonEmptyOptions.length - 1]
-
+          let min = nonEmptyOptions[0];
+          let max = nonEmptyOptions[nonEmptyOptions.length - 1];
 
           for (let each of nonEmptyOptions) {
             if (Number(each) < Number(max)) {
-              categories.push(`${each}-${Number(each) + 20}`)
+              categories.push(`${each}-${Number(each) + 10}`);
             }
-  
           }
 
           setOptionsSet(categories);
+        } else if (requestedOption == "calories") {
+          let min = nonEmptyOptions[0];
+          let max = nonEmptyOptions[nonEmptyOptions.length - 1];
 
-      
+          for (let each of nonEmptyOptions) {
+            if (Number(each) < Number(max)) {
+              categories.push(`${each}-${Number(each) + 20}`);
+            }
+          }
 
-
-
-        } 
-        
-        
-        else {
+          setOptionsSet(categories);
+        } else {
           setOptionsSet(nonEmptyOptions);
         }
-
-
-
-      
-        
-       
       } catch (err) {
         console.error(err);
       }
@@ -199,42 +175,31 @@ export default function Index() {
   }, [requestedOption]);
 
   const loadDishes = async () => {
+    let params = new URLSearchParams();
 
-
-let params = new URLSearchParams()
-
-selectedFields.ingredients.forEach((item) => {
-
-  params.append("ingredients", item)
-
-
-})
-
-
+    selectedFields.ingredients.forEach((item) => {
+      params.append("ingredients", item);
+    });
 
     let queryStr = `taste=${selectedFields.taste}&region=${selectedFields.region}&cooking_method=${selectedFields.cookingMethod}&calories=${selectedFields.calories}&prep_time=${selectedFields.prepTime}&ingredients=${params.toString()}`;
-
-    
-
-   
 
     try {
       const url = `${serverAddress}/dishes/preferences?${queryStr}`;
       console.log(url);
-        // const token  = await SecureStore.getItemAsync("access-token")
-        const token  = localStorage.getItem("access-token")
+      // const token  = await SecureStore.getItemAsync("access-token")
+      const token = localStorage.getItem("access-token");
 
       const res = await axios.get(url, {
         headers: {
-          "Authorization": `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       console.log(res?.data);
       setMatchingDishes(res?.data);
     } catch (err) {
       console.error(err);
     } finally {
-      newIngredients.current = []
+      newIngredients.current = [];
     }
   };
 
@@ -245,70 +210,70 @@ selectedFields.ingredients.forEach((item) => {
       {/* <TouchableOpacity className="bg-red-400 h-20 w-20"   onPress={() => console.log("pressed")}> 
     <Text>Hello</Text>
     </TouchableOpacity> */}
-    
 
+      {showResults ? (
+        <ScrollView>
+          <View className="w-[95%] mx-auto lg:w-1/4 mt-8">
+            <Text className={`mb-4  `} style={{ color: "#c9c8c3" }}>
+              {" "}
+              Dishes matching your preferences:
+            </Text>
 
+            <FlatList
+              data={matchingDishes}
+              // renderItem={({item} )=> <View > {item.name} -- {item.prep_time} </View>}
+              renderItem={({ item }) => <DishCard dish={item} />}
+              keyExtractor={(item) => String(item.id)}
+              ListEmptyComponent={
+                <View>
+                  {" "}
+                  No Dishes Found Matching your preferences. Please try
+                  something else!{" "}
+                </View>
+              }
+            />
+          </View>
+        </ScrollView>
+      ) : (
+        <ScrollView>
+          <View
+            className={
+              "flex-row flex-wrap justify-center gap-3 w-[95%] mx-auto lg:w-1/4 mt-8"
+            }
+          >
+            {options.map((option, index) => (
+              <TouchableOpacity
+                key={index}
+                style={{ pointerEvents: "auto" }}
+                onPress={() => {
+                  console.log("pressed");
+                  setModalVisible(true);
+                  setRequestedOption(option.value);
+                }}
+              >
+                <OptionsCard
+                  optionItem={option}
+                  selected={selectedFields}
+                  imageSrc={optionImages[index]}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
 
- {showResults ?      <ScrollView >
-
-
-
-<View className="w-[95%] mx-auto lg:w-1/4 mt-8">
-
-<Text className={`mb-4  `} style={{color:"#c9c8c3"}}> Dishes matching your preferences:</Text>
-
-
-
-<FlatList 
-
-data={matchingDishes}
-// renderItem={({item} )=> <View > {item.name} -- {item.prep_time} </View>}
-renderItem={({item} )=> <DishCard  dish={item} />}
-
-keyExtractor={item => String(item.id)}
-ListEmptyComponent={<View> No Dishes Found Matching your preferences. Please try something else! </View>}
-
-/>
-
-</View>
-
-
-
-</ScrollView> :   <ScrollView>
-        <View
-          className={
-            "flex-row flex-wrap justify-center gap-3 w-[95%] mx-auto lg:w-1/4 mt-8"
-          }
-        >
-          {options.map((option, index) => (
-            <TouchableOpacity
-              key={index}
-              style={{ pointerEvents: "auto" }}
+          <View className={"mt-8 w-1/3 mx-auto"}>
+            <Button
               onPress={() => {
-                console.log("pressed");
-                setModalVisible(true);
-                setRequestedOption(option.value);
+                console.log("submitting");
+                setShowResults(true);
+                loadDishes();
               }}
-            >
-              <OptionsCard optionItem={option} selected={selectedFields} />
-            </TouchableOpacity>
-          ))}
-        </View>
-
-
-        <View className={"mt-8 w-1/3 mx-auto"}>
-          <Button
-            onPress={() => {
-              console.log("submitting");
-              setShowResults(true);
-              loadDishes();
-            }}
-            title="Show Dishes"
-            color="#D28E00"
-            accessibilityLabel="Learn more about this purple button"
-          />
-        </View>
-      </ScrollView>}
+              title="Show Dishes"
+              color="#D28E00"
+              accessibilityLabel="Learn more about this purple button"
+            />
+          </View>
+        </ScrollView>
+      )}
 
       <SafeAreaProvider>
         <SafeAreaView>
@@ -320,27 +285,37 @@ ListEmptyComponent={<View> No Dishes Found Matching your preferences. Please try
           >
             <View className="flex-1 justify-center items-center ">
               <View className="w-[90%] mx-auto lg:w-1/2 rounded-lg bg-white p-5 border border-zinc-200 ">
-
-              <View className="w-full flex-row  " style={{display: 'flex', justifyContent: 'space-between'}}>  <Text className="text-2xl mb-6">
-                  Choose {" "}
-                   {options.find((item) => item.value === requestedOption)?.name} 
-                 <Text className="text-base" style={{color: "#c9c8c3"}}>  {requestedOption == "prep_time" ? "(In Minutes)" : ""}</Text>
-
-
-                </Text>
-
-
-               <Pressable onPress={() => setModalVisible(false)} > <X /></Pressable>
+                <View
+                  className="w-full flex-row  "
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  {" "}
+                  <Text className="text-2xl mb-6">
+                    Choose{" "}
+                    {
+                      options.find((item) => item.value === requestedOption)
+                        ?.name
+                    }
+                    <Text className="text-base" style={{ color: "#c9c8c3" }}>
+                      {" "}
+                      {requestedOption == "prep_time" ? "(In Minutes)" : ""}
+                    </Text>
+                  </Text>
+                  <Pressable onPress={() => setModalVisible(false)}>
+                    {" "}
+                    <X />
+                  </Pressable>
                 </View>
 
-              
-                <ScrollView className={"flex-1"} contentContainerStyle={{
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                  justifyContent: "center",
-                  gap: 16
-
-                }}>
+                <ScrollView
+                  className={"flex-1"}
+                  contentContainerStyle={{
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                    gap: 16,
+                  }}
+                >
                   {/*{   [1, 2, 3, 4, 5, 6].map((item, index) => <View>{item}</View> )  }*/}
 
                   {optionsSet?.map((option, index) => (
@@ -352,55 +327,43 @@ ListEmptyComponent={<View> No Dishes Found Matching your preferences. Please try
                         shadowOpacity: 0.8,
                         elevation: 3,
                         padding: 12,
-                        backgroundColor: hovered || (requestedOption == "ingredients" && newIngredients.current.includes(option)) ? '#D28E00' : '#c9c8c3',
-                      
+                        backgroundColor:
+                          hovered ||
+                          (requestedOption == "ingredients" &&
+                            newIngredients.current.includes(option))
+                            ? "#D28E00"
+                            : "#c9c8c3",
+
                         borderColor: pressed ? "black" : "#c9c8c3",
                         borderWidth: 2,
                         borderRadius: 10,
                         marginBottom: 10,
                       })}
                       onPress={() => {
-
-                      
-
                         if (requestedOption != "ingredients") {
                           setSelectedFields((prev) => ({
                             ...prev,
                             [requestedOption]: option,
                           }));
                           setModalVisible(false);
-                        
-
-                        
                         } else {
+                          const ingredientSet = new Set(newIngredients.current);
 
-                          const ingredientSet = new Set(newIngredients.current)
-                         
                           if (ingredientSet.has(option)) {
-                             newIngredients.current = newIngredients.current.filter(item => item != option)
-
-
+                            newIngredients.current =
+                              newIngredients.current.filter(
+                                (item) => item != option,
+                              );
                           } else {
-
-                            newIngredients.current.push(option)
-                           
+                            newIngredients.current.push(option);
                           }
 
-                          console.log(newIngredients.current)
-                          setSelectedFields((prev) => ({...prev,  [requestedOption] : newIngredients.current}))
-
-                        
-
+                          console.log(newIngredients.current);
+                          setSelectedFields((prev) => ({
+                            ...prev,
+                            [requestedOption]: newIngredients.current,
+                          }));
                         }
-
-
-                      
-
-
-
-
-
-                       
                       }}
                     >
                       <Text
@@ -410,7 +373,7 @@ ListEmptyComponent={<View> No Dishes Found Matching your preferences. Please try
                           }
                         }
                       >
-                        {option} 
+                        {option}
                       </Text>
                     </Pressable>
                   ))}
